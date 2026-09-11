@@ -38,8 +38,11 @@ jobs:
       - name: Validar sintaxis JavaScript
         run: node --check paginaCristianoRonaldo/script.js
 
+      - name: Instalar Playwright y axe-core para auditoría
+        run: npm install --no-save --no-package-lock playwright@1.51.1 axe-core@4.10.3
+
       - name: Instalar Chromium para axe-core
-        run: npx --yes playwright@1.51.1 install --with-deps chromium
+        run: npx playwright install --with-deps chromium
 
       - name: Servir el sitio local
         shell: bash
@@ -56,7 +59,7 @@ jobs:
           exit 1
 
       - name: Auditoría automática axe-core WCAG 2.0 AA
-        run: npx --yes @axe-core/cli@4.10.2 http://127.0.0.1:4173/paginaCristianoRonaldo/ --tags wcag2a,wcag2aa --exit
+        run: node tools/axe_audit.cjs http://127.0.0.1:4173/paginaCristianoRonaldo/
 
       - name: Comprobar rutas de recursos locales
         shell: bash
