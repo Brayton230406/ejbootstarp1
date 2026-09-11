@@ -56,7 +56,7 @@ jobs:
           exit 1
 
       - name: Auditoría automática axe-core WCAG 2.0 AA
-        run: npx --yes @axe-core/cli@4.10.2 http://127.0.0.1:4173/paginaCristianoRonaldo/ --exit
+        run: npx --yes @axe-core/cli@4.10.2 http://127.0.0.1:4173/paginaCristianoRonaldo/ --tags wcag2a,wcag2aa --exit
 
       - name: Comprobar rutas de recursos locales
         shell: bash
