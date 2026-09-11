@@ -1,0 +1,94 @@
+name: CI/CD · Sitio Cristiano Ronaldo
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Calidad y accesibilidad WCAG AA
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Preparar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validar HTML, ARIA, enlaces y CSS responsive
+        run: python tools/validate_site.py paginaCristianoRonaldo
+
+      - name: Preparar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Validar sintaxis JavaScript
+        run: node --check paginaCristianoRonaldo/script.js
+
+      - name: Instalar Chromium para axe-core
+        run: npx --yes playwright@1.51.1 install --with-deps chromium
+
+      - name: Servir el sitio local
+        shell: bash
+        run: |
+          python -m http.server 4173 --directory . >/tmp/site-server.log 2>&1 &
+          echo $! > /tmp/site-server.pid
+          for attempt in {1..20}; do
+            if curl --fail --silent http://127.0.0.1:4173/paginaCristianoRonaldo/ >/dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/site-server.log
+          exit 1
+
+      - name: Auditoría automática axe-core WCAG 2.0 AA
+        run: npx --yes @axe-core/cli@4.10.2 http://127.0.0.1:4173/paginaCristianoRonaldo/ --exit
+
+      - name: Comprobar rutas de recursos locales
+        shell: bash
+        run: |
+          test "$(curl --silent --output /dev/null --write-out '%{http_code}' http://127.0.0.1:4173/paginaCristianoRonaldo/)" = "200"
+          test "$(curl --silent --output /dev/null --write-out '%{http_code}' http://127.0.0.1:4173/paginaCristianoRonaldo/styles.css)" = "200"
+          test "$(curl --silent --output /dev/null --write-out '%{http_code}' http://127.0.0.1:4173/paginaCristianoRonaldo/script.js)" = "200"
+
+  deploy:
+    name: Publicar en GitHub Pages
+    needs: quality
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Preparar artefacto del sitio
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: paginaCristianoRonaldo
+
+      - name: Desplegar GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
