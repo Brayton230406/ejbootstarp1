@@ -1,0 +1,47 @@
+:root {
+  --cr7-ink: #111312;
+  --cr7-paper: #f2efe8;
+  --cr7-night: #1d2722;
+  --cr7-gold: #d5a84c;
+  --cr7-gold-dark: #8a5d00;
+}
+
+.bootstrap-cr7 {
+  background: var(--cr7-paper);
+  color: var(--cr7-ink);
+  font-family: 'DM Sans', sans-serif;
+}
+
+.bootstrap-cr7 .navbar-brand,
+.bootstrap-cr7 h1,
+.bootstrap-cr7 h2,
+.bootstrap-cr7 h3,
+.bootstrap-cr7 .display-4,
+.bootstrap-cr7 .display-6 {
+  font-family: 'Barlow Condensed', sans-serif;
+  text-transform: uppercase;
+}
+
+.bootstrap-cr7 .navbar-brand { letter-spacing: .05em; }
+.bootstrap-cr7 .brand-mark { color: var(--cr7-gold-dark); font-size: 1.6rem; }
+.bootstrap-cr7 .hero-panel { background: var(--cr7-night); color: #fffdf7; }
+.bootstrap-cr7 .hero-panel h1 { font-size: clamp(3.8rem, 8vw, 7rem); line-height: .88; }
+.bootstrap-cr7 .hero-panel h1 span,
+.bootstrap-cr7 .text-gold { color: var(--cr7-gold); }
+.bootstrap-cr7 .hero-image { min-height: 430px; object-fit: cover; }
+.bootstrap-cr7 .section-kicker { color: var(--cr7-gold-dark); font-size: .78rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
+.bootstrap-cr7 .hero-panel .section-kicker { color: var(--cr7-gold); }
+.bootstrap-cr7 .section-dark { background: var(--cr7-night); color: #fffdf7; }
+.bootstrap-cr7 .stat-number { color: var(--cr7-gold); font-family: 'Barlow Condensed', sans-serif; font-size: clamp(3.5rem, 8vw, 6rem); line-height: .85; }
+.bootstrap-cr7 .gallery-image { height: 300px; object-fit: cover; filter: saturate(.8); }
+.bootstrap-cr7 .gallery-image:hover { filter: saturate(1); }
+.bootstrap-cr7 .accordion-button:not(.collapsed) { background: #f7e4b3; color: var(--cr7-ink); }
+.bootstrap-cr7 .accordion-button:focus { box-shadow: 0 0 0 .25rem rgba(213, 168, 76, .35); }
+.bootstrap-cr7 .btn-cr7 { background: var(--cr7-gold); border-color: var(--cr7-gold); color: var(--cr7-ink); font-weight: 700; }
+.bootstrap-cr7 .btn-cr7:hover { background: #f1d99c; border-color: #f1d99c; color: var(--cr7-ink); }
+.bootstrap-cr7 .footer-cr7 { background: #d9d4c8; }
+
+@media (max-width: 575.98px) {
+  .bootstrap-cr7 .hero-image { min-height: 360px; }
+  .bootstrap-cr7 .display-6 { font-size: 2.8rem; }
+}
