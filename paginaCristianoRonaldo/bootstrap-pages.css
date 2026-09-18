@@ -44,6 +44,9 @@
 .bootstrap-cr7 .footer-cr7 { background: #d9d4c8; }
 
 @media (max-width: 575.98px) {
+  .bootstrap-cr7 .navbar-brand { min-width: 0; font-size: .95rem; white-space: normal; }
+  .bootstrap-cr7 .navbar-brand > span:last-child { max-width: 132px; line-height: 1.05; white-space: normal; }
+  .bootstrap-cr7 .navbar-toggler { flex-shrink: 0; }
   .bootstrap-cr7 .hero-image { min-height: 360px; }
   .bootstrap-cr7 .display-6 { font-size: 2.8rem; }
 }
