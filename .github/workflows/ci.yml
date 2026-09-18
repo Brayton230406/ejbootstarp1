@@ -30,6 +30,9 @@ jobs:
       - name: Validar HTML, ARIA, enlaces y CSS responsive
         run: python tools/validate_site.py paginaCristianoRonaldo
 
+      - name: Validar páginas Bootstrap
+        run: python tools/validate_bootstrap.py paginaCristianoRonaldo
+
       - name: Preparar Node.js
         uses: actions/setup-node@v4
         with:
@@ -50,7 +53,7 @@ jobs:
           python -m http.server 4173 --directory . >/tmp/site-server.log 2>&1 &
           echo $! > /tmp/site-server.pid
           for attempt in {1..20}; do
-            if curl --fail --silent http://127.0.0.1:4173/paginaCristianoRonaldo/ >/dev/null; then
+            if curl --fail --silent http://127.0.0.1:4173/paginaCristianoRonaldo/bootstrap-online.html >/dev/null; then
               exit 0
             fi
             sleep 1
@@ -59,12 +62,21 @@ jobs:
           exit 1
 
       - name: Auditoría automática axe-core WCAG 2.0 AA
-        run: node tools/axe_audit.cjs http://127.0.0.1:4173/paginaCristianoRonaldo/
+        shell: bash
+        run: |
+          node tools/axe_audit.cjs http://127.0.0.1:4173/paginaCristianoRonaldo/
+          for page in bootstrap-online.html bootstrap-offline.html; do
+            node tools/axe_audit.cjs "http://127.0.0.1:4173/paginaCristianoRonaldo/$page"
+          done
+
+      - name: Auditoría responsive y carga de imágenes
+        run: node tools/responsive_audit.cjs http://127.0.0.1:4173/paginaCristianoRonaldo/
 
       - name: Comprobar rutas de recursos locales
         shell: bash
         run: |
-          test "$(curl --silent --output /dev/null --write-out '%{http_code}' http://127.0.0.1:4173/paginaCristianoRonaldo/)" = "200"
+          test "$(curl --silent --output /dev/null --write-out '%{http_code}' http://127.0.0.1:4173/paginaCristianoRonaldo/bootstrap-online.html)" = "200"
+          test "$(curl --silent --output /dev/null --write-out '%{http_code}' http://127.0.0.1:4173/paginaCristianoRonaldo/bootstrap-offline.html)" = "200"
           test "$(curl --silent --output /dev/null --write-out '%{http_code}' http://127.0.0.1:4173/paginaCristianoRonaldo/styles.css)" = "200"
           test "$(curl --silent --output /dev/null --write-out '%{http_code}' http://127.0.0.1:4173/paginaCristianoRonaldo/script.js)" = "200"
 
@@ -88,9 +100,18 @@ jobs:
         uses: actions/configure-pages@v5
 
       - name: Preparar artefacto del sitio
+        shell: bash
+        run: |
+          mkdir -p _site/offline-assets
+          cp paginaCristianoRonaldo/bootstrap-online.html _site/index.html
+          cp paginaCristianoRonaldo/bootstrap-offline.html _site/
+          cp paginaCristianoRonaldo/bootstrap-pages.css _site/
+          cp -r paginaCristianoRonaldo/offline-assets/* _site/offline-assets/
+
+      - name: Subir artefacto del sitio
         uses: actions/upload-pages-artifact@v3
         with:
-          path: paginaCristianoRonaldo
+          path: _site
 
       - name: Desplegar GitHub Pages
         id: deployment
