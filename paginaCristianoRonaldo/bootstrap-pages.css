@@ -32,6 +32,8 @@
 .bootstrap-cr7 .section-kicker { color: var(--cr7-gold-dark); font-size: .78rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
 .bootstrap-cr7 .hero-panel .section-kicker { color: var(--cr7-gold); }
 .bootstrap-cr7 .section-dark { background: var(--cr7-night); color: #fffdf7; }
+.bootstrap-cr7 .section-dark .section-kicker { color: #f1d99c; }
+.bootstrap-cr7 .text-secondary { color: #4f5750 !important; }
 .bootstrap-cr7 .stat-number { color: var(--cr7-gold); font-family: 'Barlow Condensed', sans-serif; font-size: clamp(3.5rem, 8vw, 6rem); line-height: .85; }
 .bootstrap-cr7 .gallery-image { height: 300px; object-fit: cover; filter: saturate(.8); }
 .bootstrap-cr7 .gallery-image:hover { filter: saturate(1); }
